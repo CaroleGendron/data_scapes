@@ -1,48 +1,60 @@
 const canvasSketch = require('canvas-sketch');
 const Tweakpane = require('tweakpane');
-const math = require("canvas-sketch-util/math") //for mapRange
+const math = require("canvas-sketch-util/math"); //for mapRange
+const rgbaToHex = require('canvas-sketch-util/lib/rgba-to-hex');
 
 const settings = {
   dimensions: [ 1080, 1080 ], //2 times insta
   animate: true, //to allow Tweakpane to work
 };
 
-//Setting Title Name
-const title_name = "My Autoportrait"
-
 
 //Default values Tweakpane
 const params= {
-  Lines: 1, //density lines
-  Spread: 1, //width
-  Shape: 1, //neat-blur
-  Shadow: 1, //stain
-  Color: '#ff5c00',
+  Lines: 5, //density lines
+  Spread: 5, //width
+  Shape: 5, //neat-blur
+  Shadow: 5, //
+  //Color: "rgb(255,255,255)" //rgb(151,158,158)//'#ff5c00'
 }
+// Assuming you have r, g, b values defined
+const r = 25, g = 200, b = 100;
 
+// Create the rgba string for shadow color
+const lineColor = `rgb(${r},${g},${b})`;
 
+// Function to generate a random number between -50 and 50
+const randomValue = () => Math.floor(Math.random() * 101) - 50;
 
-//Variable setting random starting point the canvas
+// Generate random RGB values for the shadow
+const rShadow = randomValue();
+const gShadow = randomValue();
+const bShadow = randomValue();
+
+// Create the rgba string for shadow color
+const shadowColor = `rgba(${rShadow},${gShadow},${bShadow},0.8)`;
+
+//Variable setting random start drawing point the canvas
 const variable = Math.floor(Math.random() * 6000);
 
 const sketch = () => {
   return ({ context, width, height }) => {
-    context.fillStyle = '#F6F3E1';
+    context.fillStyle = '#F6F3E1'; //background canvas
     context.fillRect(0, 0, width, height);
 
     const Lines = params.Lines;
     const Spread = params.Spread;
     const Shape = params.Shape;
     const Shadow = params.Shadow;
-    const Color = params.Color;
+    // const Color = params.Color;
 
 // creation indicator list to be able to loop
 const indicator_list = ["Shape","Spread", "Lines",  "Shadow"];
 const indicator =  indicator_list[Math.floor(Math.random()*indicator_list.length)];//params.indic
-console.log("indicator", indicator)
+// console.log("indicator", indicator)
 
 const degToRad = (degrees) => {
-  return degrees / 180 * Math.PI; //f_pop 1 DEFINITION DENTELLE. 1 TO 360
+  return degrees / 180 * Math.PI;
 };
 
 let newIndic;
@@ -70,15 +82,12 @@ else if  (indicator== "Color"){
 }
 
 //scaling
-const scalePop=math.mapRange(Lines, 1,10, 1, 600)
+const scaleLine=math.mapRange(Lines, 1,10, 1, 600)
 const ShapeInverse =math.mapRange(Shape, 1,10, 10, 1)
 const scaleShape=math.mapRange(ShapeInverse, 1,10, 0.10, 0.9)
-const scaleShadow=math.mapRange(Shadow, 1,10,  0.0003, 0.005)
+const scaleShadow=math.mapRange(Shadow, 1,10,  0.0003, 0.006)
 const scaleSpread=math.mapRange(Spread, 1,10,  0.1, 0.6)
-// const colorRGB = `rgb(${colorVal},${colorVal},${colorVal})`
 
-// console.log("color::", colorVal)
-// console.log("colorRGB::", colorRGB)
 
 //positioning
 const cx = width /2;
@@ -90,9 +99,10 @@ let x,y;
 
 const radius = width * scaleShape/4 // from 0.1 to 1
 
-for (let i =0; i <scalePop; i++){
 
-  const slice = degToRad(360/scalePop);// 27 to 360 //work really well
+for (let i =0; i <scaleLine; i++){
+
+  const slice = degToRad(360/scaleLine);// 27 to 360 //work really well
   const angle = slice * i;
 
   x = cx + radius * Math.sin(angle * Math.PI + variable);
@@ -104,11 +114,11 @@ for (let i =0; i <scalePop; i++){
   context.shadowOffsetX = 10;
   context.shadowOffsetY = 10;
   context.shadowBlur =  Shadow*10;//
-  context.shadowColor = Color//"#211BBD";
+  context.shadowColor = shadowColor//'rgb(shadow_color.r,shadow_color.g,shadow_color.b)' //'#ff5c00' //orange //"#211BBD";
 
   context.beginPath();
   context.rect(-w * 1 ,- h , w , h);
-  context.fillStyle = '#ff5c00'//colorRGB;
+  context.fillStyle = lineColor//"rgba(255, 255, 0, 0.8)" // yellow / "rgb(108,115,115)"//colorRGB; '#ff5c00'
   context.fill();
   context.restore();
 }
@@ -143,6 +153,7 @@ for (let i =0; i <scalePop; i++){
   context.restore()
   };
 };
+
 
 canvasSketch(sketch, settings);
 
