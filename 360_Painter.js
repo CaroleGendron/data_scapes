@@ -120,7 +120,7 @@ for (let i =0; i <scalePop; i++){
   };
 
   //Title line1 and center
-  const title = "Europe";
+  const title = "Me, my face and I";
   context.fillStyle = '#313131';
   context.font = "70px futura";
   const titleCenter = centerX(title);
@@ -128,11 +128,11 @@ for (let i =0; i <scalePop; i++){
   context.restore()
 
   //Title line2 and center
-  const subtitle = " Designed by... me";
+  const subtitle = "by Data-Scapes";
   context.fillStyle = '#313131';
   context.font = "italic 30px futura";
   const subtitleCenter = centerX(subtitle);
-  context.fillText(subtitle, subtitleCenter, 1000);
+  context.fillText(subtitle, subtitleCenter, 1010);
   context.restore()
 
   //Title serie name + font
