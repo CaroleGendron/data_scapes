@@ -125,7 +125,7 @@ for (let i =0; i <scaleLine; i++){
   context.restore()
 
   //Title line2 and center
-  const subtitle = "by Data-Scapes";
+  const subtitle = "by Data-Scapes Atelier";
   context.fillStyle = '#313131';
   context.font = "italic 30px futura";
   const subtitleCenter = centerX(subtitle);
@@ -159,7 +159,7 @@ const createPane = () => {
 
   let folder;
 
-  folder = pane.addFolder({ title : "4 paiting values. 1=low 10=high"});
+  folder = pane.addFolder({ title : "5 data-driven painting elements"});
   folder.addInput(params, 'Lines', { min: 1, max: 10 });
   folder.addInput(params, 'Spread', { min: 1, max: 10 });
   folder.addInput(params, 'Shape', { min: 1, max: 10 });
