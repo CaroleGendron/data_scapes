@@ -47,15 +47,16 @@ function setup() {
 
   // Initialize audio effects
   reverb = new p5.Reverb();
-  delay = new p5.Delay();
   distortion = new p5.Distortion();
+  delay = new p5.Delay();
+  delay.setType('pingPong');
 
   // Connect the effects in the desired order
   sample.disconnect();
   sample.connect(distortion);
-  distortion.connect(delay);
-  delay.connect(reverb);
-  reverb.connect();
+  distortion.connect(reverb);
+  reverb.connect(delay);
+  delay.process(sample);
 
   // Add an input event listener to the sliders
   reverbSlider.input(applyEffects);
@@ -84,7 +85,7 @@ function applyEffects() {
   reverb.drywet(reverbSlider.value());
   delay.delayTime(delayTimeSlider.value());
   delay.feedback(delayFeedbackSlider.value());
-  distortion.amount(distortionSlider.value());
+  distortion.set(distortionSlider.value());
 }
 
 
