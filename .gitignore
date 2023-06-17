@@ -1,0 +1,2 @@
+#a gitignore is not pushed in gigthub. here we specify which file to hide
+.env
