@@ -9,7 +9,7 @@ client = boto3.client(
 )
 
 # Specify the image as bytes
-with open('media/test_image.jpg', 'rb') as image:
+with open('media/test_image5.jpg', 'rb') as image:
     image_bytes = image.read()
 
 # Perform facial analysis
@@ -44,28 +44,43 @@ emotion_colors = {
 for i, face in enumerate(face_details):
     face_dict = OrderedDict()
     for attribute, value in face.items():
-        if attribute in attributes_to_keep:
-            if attribute == 'AgeRange':
-                face_dict['Age_Median'] = (value['Low'] + value['High']) / 2
-                face_dict['Age_Range'] = value['High'] - value['Low']
-            elif attribute == 'Smile':
-                if value['Value']:  # if Smile is True
-                    face_dict[attribute] = round(value['Confidence'])/10 # /10to fit painting scale
-                else:  # if Smile is False
-                    face_dict[attribute] = round(100 - value['Confidence']) /10 # /10to fit painting scale
-                # print(f"Smile value: {value['Value']}, Confidence: {value['Confidence']}")
-            elif attribute == 'Gender':
-                if value['Value'] == 'Female': #scale = female = 0, average =5
-                    face_dict[attribute] = round((1-(value['Confidence']/100) )*10 , 2)
-                elif value['Value'] == 'Male': #scale = male = 10, average =5
-                    face_dict[attribute] = round((value['Confidence'] /100 ) * 10, 2)
-            elif attribute == 'Emotions':
-                # sort the emotions by confidence and get the two most confident
-                most_confident_emotions = sorted(value, key=lambda x:x['Confidence'], reverse=True)[:2]
-                colors = [emotion_colors[emotion['Type']] for emotion in most_confident_emotions]
-                # Average the RGB values of the two most confident emotions
-                average_color = tuple(sum(x)/len(x) for x in zip(*colors))
-                face_dict['Average_Color'] = average_color
+        if attribute == "AgeRange":
+            age_median = (value['Low'] + value['High']) / 2
+            age_range = value['High'] - value['Low']
+
+            # Define new_min and new_max for scaling
+            new_min, new_max = 1, 10
+
+            # Scale the values
+            age_median_min, age_median_max = 15, 70
+            scaled_age_median = ((age_median - age_median_min) / (age_median_max - age_median_min)) * (new_max - new_min) + new_min
+
+            age_range_min, age_range_max = 0, 15
+            scaled_age_range = ((age_range - age_range_min) / (age_range_max - age_range_min)) * (new_max - new_min) + new_min
+
+            face_dict['Age_Median'] = scaled_age_median
+            face_dict['Age_Range'] = scaled_age_range
+        # ... rest of your code
+
+
+        elif attribute == 'Smile':
+            if value['Value']:  # if Smile is True
+                face_dict[attribute] = round(value['Confidence'])/10 # /10to fit painting scale
+            else:  # if Smile is False
+                face_dict[attribute] = round(100 - value['Confidence']) /10 # /10to fit painting scale
+            # print(f"Smile value: {value['Value']}, Confidence: {value['Confidence']}")
+        elif attribute == 'Gender':
+            if value['Value'] == 'Female': #scale = female = 0, average =5
+                face_dict[attribute] = round((1-(value['Confidence']/100) )*10 , 2)
+            elif value['Value'] == 'Male': #scale = male = 10, average =5
+                face_dict[attribute] = round((value['Confidence'] /100 ) * 10, 2)
+        elif attribute == 'Emotions':
+            # sort the emotions by confidence and get the two most confident
+            most_confident_emotions = sorted(value, key=lambda x:x['Confidence'], reverse=True)[:2]
+            colors = [emotion_colors[emotion['Type']] for emotion in most_confident_emotions]
+            # Average the RGB values of the two most confident emotions
+            average_color = tuple(sum(x)/len(x) for x in zip(*colors))
+            face_dict['Average_Color'] = average_color
 
     # Reorder the dictionary as per your preference
     ordered_face_dict = OrderedDict([
