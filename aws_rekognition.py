@@ -9,7 +9,7 @@ client = boto3.client(
 )
 
 # Specify the image as bytes
-with open('media/test_image5.jpg', 'rb') as image:
+with open('media/test_image.jpg', 'rb') as image:
     image_bytes = image.read()
 
 # Perform facial analysis
@@ -44,6 +44,7 @@ emotion_colors = {
 for i, face in enumerate(face_details):
     face_dict = OrderedDict()
     for attribute, value in face.items():
+
         if attribute == "AgeRange":
             age_median = (value['Low'] + value['High']) / 2
             age_range = value['High'] - value['Low']
@@ -60,8 +61,6 @@ for i, face in enumerate(face_details):
 
             face_dict['Age_Median'] = scaled_age_median
             face_dict['Age_Range'] = scaled_age_range
-        # ... rest of your code
-
 
         elif attribute == 'Smile':
             if value['Value']:  # if Smile is True
@@ -69,11 +68,15 @@ for i, face in enumerate(face_details):
             else:  # if Smile is False
                 face_dict[attribute] = round(100 - value['Confidence']) /10 # /10to fit painting scale
             # print(f"Smile value: {value['Value']}, Confidence: {value['Confidence']}")
+
         elif attribute == 'Gender':
-            if value['Value'] == 'Female': #scale = female = 0, average =5
-                face_dict[attribute] = round((1-(value['Confidence']/100) )*10 , 2)
-            elif value['Value'] == 'Male': #scale = male = 10, average =5
-                face_dict[attribute] = round((value['Confidence'] /100 ) * 10, 2)
+            diff_confidence = (100 - value['Confidence']) / 100 * 10
+            if value['Value'] == 'Female':
+                face_dict[attribute] = diff_confidence *2
+            elif value['Value'] == 'Male':
+                face_dict[attribute] = 10 - (diff_confidence * 50)
+            print(f"Gender value: {value['Value']}, Confidence: {value['Confidence']},  DifConfidence: {(100 - value['Confidence']) / 100 * 10}")
+
         elif attribute == 'Emotions':
             # sort the emotions by confidence and get the two most confident
             most_confident_emotions = sorted(value, key=lambda x:x['Confidence'], reverse=True)[:2]
