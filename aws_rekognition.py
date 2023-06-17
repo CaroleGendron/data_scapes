@@ -1,12 +1,28 @@
 import boto3
+import os
 
-# Create a Rekognition client
+from dotenv import load_dotenv
+
+dotenv_path = '/Users/carole/code/CaroleGendron/data_scapes/.env'
+load_dotenv(dotenv_path)
+
+load_dotenv('.env_path')  # take environment variables from .env.
+
+print(os.getenv('AWS_ACCESS_KEY_ID'))
+print(os.getenv('AWS_SECRET_ACCESS_KEY'))
+
+# Now you can access the variables using os.getenv('variable_name')
+
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+
 client = boto3.client(
     'rekognition',
     region_name='eu-west-1',  # update to your region
-    aws_access_key_id='AKIAW6NNRBIWIGN3BIVM',
-    aws_secret_access_key='DYn15gIJwC6jDj52Rpe6wKNM7TuhDpVN9euZ/BCC',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
 )
+
 
 # Specify the image as bytes
 with open('media/test_image.jpg', 'rb') as image:
