@@ -18,7 +18,7 @@ let started = false;
 
 const setupAudio = () => {
   audio = document.createElement('audio');
-  audio.src = "audio/Keys.mp3";
+  audio.src = "Keys.mp3";
 
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
   const source = audioContext.createMediaElementSource(audio);
