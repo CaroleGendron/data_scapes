@@ -1,5 +1,3 @@
-
-
 //////-------------------- REQUIRED LIBRARIES------------------///
 
 const canvasSketch = require('canvas-sketch');
@@ -78,6 +76,8 @@ loadJSON('output.json').then((faceAttributes) => {
       });
     };
 
+    //////-------------------- MAKE THE PAINTING/DRAWING------------------///
+    
     const sketch = () => {
       return ({ context, width, height }) => {
         context.fillStyle = '#F6F3E1';

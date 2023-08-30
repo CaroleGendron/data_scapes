@@ -26,6 +26,8 @@ const Lines = 19 //min =5 max =20 (empiric)
 //Variable setting random start drawing point the canvas
 const variable = Math.floor(Math.random() * 6000);
 
+//////-------------------- MAKE THE PAINTING/DRAWING------------------///
+
 const sketch = () => {
   return ({ context, width, height }) => {
     context.fillStyle = '#F6F3E1'; //background canvas
@@ -83,7 +85,6 @@ let x,y;
 const radius = width * scaleShape/4 // from 0.1 to 1 /4
 
 for (let i =0; i <scaleLine; i++){
-
   const slice = degToRad(360/scaleLine);// from 100 (very linear) 360 as AVR to 2000 (very fragmented)
   const angle = slice * i;
 
@@ -170,3 +171,4 @@ const createPane = () => {
 
 
 createPane();
+
